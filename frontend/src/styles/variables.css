@@ -1,0 +1,142 @@
+/* CSS Variables for Veritas AI Design System */
+
+:root {
+  /* Fonts */
+  --font-sans: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'Space Mono', monospace;
+  --font-heading: 'Syne', sans-serif;
+
+  /* Common Spacing & Borders */
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+  --radius-full: 9999px;
+  
+  --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Brand Gradients */
+  --grad-primary: linear-gradient(135deg, #7c83ff 0%, #c678ff 100%);
+  --grad-accent: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+  --grad-verdict-true: linear-gradient(135deg, #00b09b 0%, #96c93d 100%);
+  --grad-verdict-false: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%);
+  --grad-verdict-misleading: linear-gradient(135deg, #f857a6 0%, #ff5858 100%);
+  --grad-verdict-unverified: linear-gradient(135deg, #4b6cb7 0%, #182848 100%);
+
+  /* Semantic Status Colors (Fallback / Accents) */
+  --color-true: #00e676;
+  --color-true-glow: rgba(0, 230, 118, 0.15);
+  --color-false: #ff1744;
+  --color-false-glow: rgba(255, 23, 68, 0.15);
+  --color-misleading: #ff9100;
+  --color-misleading-glow: rgba(255, 145, 0, 0.15);
+  --color-unverified: #7c83ff;
+  --color-unverified-glow: rgba(124, 131, 255, 0.15);
+}
+
+/* Light Theme Variables */
+:root[data-theme="light"] {
+  --bg-primary: #f8f9fc;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #f1f3f9;
+  
+  --text-primary: #1e2229;
+  --text-secondary: #4a5468;
+  --text-muted: #8492a6;
+  --text-inverse: #ffffff;
+
+  --border-light: rgba(0, 0, 0, 0.08);
+  --border-medium: rgba(0, 0, 0, 0.15);
+  --border-accent: rgba(124, 131, 255, 0.3);
+  
+  /* Glassmorphism */
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(0, 0, 0, 0.06);
+  --glass-blur: blur(16px);
+  --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.04);
+  
+  /* Elevation Shadows */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 8px 24px rgba(149, 157, 165, 0.1);
+  --shadow-lg: 0 16px 40px rgba(149, 157, 165, 0.15);
+  
+  --input-bg: #f1f3f9;
+  --input-focus-border: #7c83ff;
+  --navbar-bg: rgba(248, 249, 252, 0.8);
+  
+  /* Dark/Light mode specific icons / elements */
+  --invert-img: 0;
+}
+
+/* Dark Theme Variables */
+:root[data-theme="dark"] {
+  --bg-primary: #0a0a0f;
+  --bg-secondary: #12121e;
+  --bg-tertiary: #1b1b2f;
+  
+  --text-primary: #e8e8f0;
+  --text-secondary: #9ca3af;
+  --text-muted: #5e6573;
+  --text-inverse: #0a0a0f;
+
+  --border-light: rgba(255, 255, 255, 0.05);
+  --border-medium: rgba(255, 255, 255, 0.12);
+  --border-accent: rgba(124, 131, 255, 0.25);
+  
+  /* Glassmorphism */
+  --glass-bg: rgba(18, 18, 30, 0.6);
+  --glass-border: rgba(255, 255, 255, 0.04);
+  --glass-blur: blur(20px);
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  
+  /* Elevation Shadows */
+  --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.7);
+  
+  --input-bg: rgba(255, 255, 255, 0.03);
+  --input-focus-border: #7c83ff;
+  --navbar-bg: rgba(10, 10, 15, 0.75);
+  
+  --invert-img: 1;
+}
+
+/* Base keyframe animations */
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+  100% { transform: translateY(0px); }
+}
+
+@keyframes pulse-slow {
+  0%, 100% { opacity: 0.8; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(1.02); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes slide-in-right {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slide-out-right {
+  from { transform: translateX(0); opacity: 1; }
+  to { transform: translateX(100%); opacity: 0; }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scale-up {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
