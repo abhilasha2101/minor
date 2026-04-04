@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { Routes, Route, Link, useLocation } from 'react-router-dom';
 import { useApp } from './context/AppContext';
 import Navbar from './components/Navbar';
@@ -16,12 +17,44 @@ export default function App() {
   // Determine if it is a mobile feed page. If so, we can hide the footer or adjust styles.
   const isFeedPage = location.pathname === '/';
 
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      // Calculate normalized mouse position (-1 to 1) for parallax
+      const x = (e.clientX / window.innerWidth) * 2 - 1;
+      const y = (e.clientY / window.innerHeight) * 2 - 1;
+      setMousePos({ x, y });
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+
   return (
     <div className="app-container">
-      {/* Floating Animated Mesh Background (configured in index.css) */}
+      {/* Floating Animated Mesh Background with Interactive Parallax */}
       <div className="mesh-bg">
-        <div className="mesh-blob mesh-blob-1" />
-        <div className="mesh-blob mesh-blob-2" />
+        <div 
+          className="parallax-layer layer-1"
+          style={{ 
+            transform: `translate(${mousePos.x * -50}px, ${mousePos.y * -50}px)`,
+            transition: 'transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)',
+            width: '100%', height: '100%', position: 'absolute'
+          }}
+        >
+          <div className="mesh-blob mesh-blob-1" />
+        </div>
+        <div 
+          className="parallax-layer layer-2"
+          style={{ 
+            transform: `translate(${mousePos.x * 70}px, ${mousePos.y * 70}px)`,
+            transition: 'transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1)',
+            width: '100%', height: '100%', position: 'absolute'
+          }}
+        >
+          <div className="mesh-blob mesh-blob-2" />
+        </div>
       </div>
 
       {/* Global Navigation Header */}

@@ -446,7 +446,7 @@ export default function Verifier() {
                       <h4>Key Findings</h4>
                       <ul className="findings-list">
                         {result.key_findings.map((finding, idx) => (
-                          <li key={idx}>
+                          <li key={idx} style={{ '--i': idx }}>
                             <span className="bullet" style={{ color: cfg.color }}>▸</span>
                             <p>{finding}</p>
                           </li>
@@ -461,7 +461,7 @@ export default function Verifier() {
                           <h4 className="title-red">⚠ Anomalous Indicators</h4>
                           <ul className="red-flags-list">
                             {result.red_flags.map((flag, idx) => (
-                              <li key={idx}>{flag}</li>
+                              <li key={idx} style={{ '--i': idx }}>{flag}</li>
                             ))}
                           </ul>
                         </div>
@@ -472,7 +472,7 @@ export default function Verifier() {
                         <h4>Sources Verified</h4>
                         <div className="sources-tags-row">
                           {result.sources_checked.map((src, idx) => (
-                            <span key={idx} className="source-tag-pill">{src}</span>
+                            <span key={idx} className="source-tag-pill" style={{ '--i': idx }}>{src}</span>
                           ))}
                         </div>
                       </div>
