@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
+import { useToast } from '../context/ToastContext';
 import { verifyNewsClaim, parseVerificationResponse, verifyImageClaim, submitFeedback } from '../services/api';
 import { ShieldCheck, Upload, Trash2, HelpCircle, Check, ThumbsUp, ThumbsDown, ArrowRight, Clipboard, AlertCircle, Activity } from 'lucide-react';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, Tooltip } from 'recharts';
@@ -51,6 +52,7 @@ const STAGES = [
 
 export default function Verifier() {
   const { addHistoryItem } = useApp();
+  const { addToast } = useToast();
   const location = useLocation();
 
   const [claimText, setClaimText] = useState('');
@@ -128,9 +130,13 @@ export default function Verifier() {
       
       // Save item into verification history
       addHistoryItem(imageFile ? `Image check: "${parsed.summary.slice(0, 40)}..."` : claimText, parsed);
+      
+      addToast(`Verification complete: ${parsed.verdict}`, parsed.verdict === 'TRUE' ? 'success' : (parsed.verdict === 'FALSE' ? 'error' : 'warning'));
     } catch (err) {
       clearInterval(stageTimerRef.current);
-      setError(err.message || 'Verification execution failed. Please verify internet connection.');
+      const errMsg = err.message || 'Verification execution failed. Please verify internet connection.';
+      setError(errMsg);
+      addToast(errMsg, 'error');
     } finally {
       setLoading(false);
       setStage('');
@@ -200,6 +206,7 @@ export default function Verifier() {
     const text = `VERITAS AI VERIFICATION REPORT\nVerdict: ${result.verdict} (${result.confidence}% Confidence)\nSummary: ${result.summary}\nFindings:\n${result.key_findings.map(f => `- ${f}`).join('\n')}\nSources Checked: ${result.sources_checked.join(', ')}`;
     navigator.clipboard.writeText(text).then(() => {
       setCopied(true);
+      addToast('Report copied to clipboard!', 'info');
       setTimeout(() => setCopied(false), 2000);
     });
   };
