@@ -118,3 +118,48 @@ export function getStats(req, res) {
     res.status(500).json({ error: { message: 'Failed to retrieve stats.' } });
   }
 }
+
+/**
+ * PUT /api/profile/details
+ * Update user bio, location, and username.
+ */
+export function updateDetails(req, res) {
+  try {
+    const { username, bio, location, avatarUrl } = req.body;
+    
+    // Simple validation
+    if (username && username.length < 3) {
+      return res.status(400).json({ error: { message: 'Username must be at least 3 characters.' } });
+    }
+
+    const updates = {};
+    if (username !== undefined) updates.username = username;
+    if (bio !== undefined) updates.bio = bio;
+    if (location !== undefined) updates.location = location;
+    if (avatarUrl !== undefined) updates.avatarUrl = avatarUrl;
+
+    const success = userRepository.updateProfile(req.user.userId, updates);
+    if (!success) {
+      return res.status(404).json({ error: { message: 'User not found or no changes made.' } });
+    }
+
+    // Fetch updated user
+    const user = userRepository.findById(req.user.userId);
+    res.json({ 
+      message: 'Profile updated successfully.',
+      user: {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        avatarColor: user.avatar_color,
+        avatarUrl: user.avatar_url || '',
+        bio: user.bio || '',
+        location: user.location || '',
+        reputationScore: user.reputation_score || 0
+      }
+    });
+  } catch (error) {
+    console.error('[ProfileController] UpdateDetails error:', error.message);
+    res.status(500).json({ error: { message: 'Failed to update profile.' } });
+  }
+}

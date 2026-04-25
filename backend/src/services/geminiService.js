@@ -9,7 +9,7 @@ const GEMINI_BASE_URL = 'https://generativelanguage.googleapis.com/v1beta/models
 /**
  * System prompt instructing the AI fact-checking agent.
  */
-const SYSTEM_PROMPT = `You are an expert fact-checker and investigative journalist AI. Your job is to verify whether a given news claim is TRUE, FALSE, MISLEADING, or UNVERIFIED.
+const SYSTEM_PROMPT = `You are an expert fact-checker and investigative journalist AI. Your job is to verify whether a given news claim is TRUE, FALSE, MISLEADING, or UNVERIFIED, and provide a deep media forensics analysis.
 
 You have access to a Google Search engine. Use it to search for multiple reputable sources to verify the claim. After searching, you must render your final verdict as a raw JSON object. Do not wrap the JSON in markdown code blocks if possible.
 
@@ -27,7 +27,15 @@ Your response MUST be a pure JSON object adhering to this exact schema:
   "key_findings": ["finding 1", "finding 2", ...],
   "sources_checked": ["source 1 URL/Name", "source 2 URL/Name", ...],
   "red_flags": ["flag 1", "flag 2", ...],
-  "advice": "Media literacy advice"
+  "advice": "Media literacy advice",
+  "deepAnalysis": {
+    "factuality": <integer 0-100>,
+    "objectivity": <integer 0-100>,
+    "sensationalism": <integer 0-100>,
+    "emotionalTone": <integer 0-100>,
+    "logicalConsistency": <integer 0-100>,
+    "sourceCredibility": <integer 0-100>
+  }
 }
 
 Enforce neutrality and objectiveness in summaries.`;
@@ -156,6 +164,14 @@ export function parseGeminiResponse(data) {
     key_findings: Array.isArray(parsed.key_findings) ? parsed.key_findings : [],
     sources_checked: Array.isArray(parsed.sources_checked) ? parsed.sources_checked : [],
     red_flags: Array.isArray(parsed.red_flags) ? parsed.red_flags : [],
-    advice: parsed.advice || ''
+    advice: parsed.advice || '',
+    deepAnalysis: {
+      factuality: Math.max(0, Math.min(100, Math.round(Number(parsed.deepAnalysis?.factuality) || 50))),
+      objectivity: Math.max(0, Math.min(100, Math.round(Number(parsed.deepAnalysis?.objectivity) || 50))),
+      sensationalism: Math.max(0, Math.min(100, Math.round(Number(parsed.deepAnalysis?.sensationalism) || 50))),
+      emotionalTone: Math.max(0, Math.min(100, Math.round(Number(parsed.deepAnalysis?.emotionalTone) || 50))),
+      logicalConsistency: Math.max(0, Math.min(100, Math.round(Number(parsed.deepAnalysis?.logicalConsistency) || 50))),
+      sourceCredibility: Math.max(0, Math.min(100, Math.round(Number(parsed.deepAnalysis?.sourceCredibility) || 50)))
+    }
   };
 }

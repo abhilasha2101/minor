@@ -50,6 +50,10 @@ export async function signup(req, res) {
         email: user.email,
         interests: user.interests,
         avatarColor: user.avatarColor,
+        avatarUrl: user.avatar_url || '',
+        bio: user.bio || '',
+        location: user.location || '',
+        reputationScore: user.reputation_score || 0,
         createdAt: user.createdAt
       }
     });
@@ -108,6 +112,10 @@ export async function login(req, res) {
         email: user.email,
         interests,
         avatarColor: user.avatar_color,
+        avatarUrl: user.avatar_url || '',
+        bio: user.bio || '',
+        location: user.location || '',
+        reputationScore: user.reputation_score || 0,
         createdAt: user.created_at
       }
     });
@@ -138,6 +146,10 @@ export function getMe(req, res) {
         email: user.email,
         interests,
         avatarColor: user.avatar_color,
+        avatarUrl: user.avatar_url || '',
+        bio: user.bio || '',
+        location: user.location || '',
+        reputationScore: user.reputation_score || 0,
         createdAt: user.created_at
       }
     });

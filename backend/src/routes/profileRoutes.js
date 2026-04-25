@@ -24,4 +24,7 @@ router.delete('/bookmarks/:id', profileController.removeBookmark);
 // Stats
 router.get('/stats', profileController.getStats);
 
+// Profile Details
+router.put('/details', profileController.updateDetails);
+
 export default router;
