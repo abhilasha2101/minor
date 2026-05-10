@@ -1,14 +1,16 @@
-import { useState, useEffect } from 'react';
-import { Routes, Route, Link, useLocation } from 'react-router-dom';
+import { useState, useEffect, Suspense, lazy } from 'react';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import { useApp } from './context/AppContext';
 import Navbar from './components/Navbar';
-import Feed from './pages/Feed';
-import Verifier from './pages/Verifier';
-import CurrentAffairs from './pages/CurrentAffairs';
-import Community from './pages/Community';
-import Profile from './pages/Profile';
-import Auth from './pages/Auth';
-import { ShieldCheck, Heart } from 'lucide-react';
+import { ShieldCheck, Heart, Loader2 } from 'lucide-react';
+
+// Lazy-loaded routes for performance optimization
+const Feed = lazy(() => import('./pages/Feed'));
+const Verifier = lazy(() => import('./pages/Verifier'));
+const CurrentAffairs = lazy(() => import('./pages/CurrentAffairs'));
+const Community = lazy(() => import('./pages/Community'));
+const Profile = lazy(() => import('./pages/Profile'));
+const Auth = lazy(() => import('./pages/Auth'));
 
 export default function App() {
   const { theme } = useApp();
@@ -62,15 +64,21 @@ export default function App() {
 
       {/* Main Pages Content Switcher */}
       <main className={`main-content ${isFeedPage ? 'feed-layout' : ''}`}>
-        <Routes>
-          <Route path="/" element={<Feed />} />
-          <Route path="/verifier" element={<Verifier />} />
-          <Route path="/current-affairs" element={<CurrentAffairs />} />
-          <Route path="/community" element={<Community />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/auth" element={<Auth />} />
-          <Route path="*" element={<Feed />} />
-        </Routes>
+        <Suspense fallback={
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', color: '#7c83ff' }}>
+            <Loader2 size={40} className="animate-spin" />
+          </div>
+        }>
+          <Routes>
+            <Route path="/" element={<Feed />} />
+            <Route path="/verifier" element={<Verifier />} />
+            <Route path="/current-affairs" element={<CurrentAffairs />} />
+            <Route path="/community" element={<Community />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/auth" element={<Auth />} />
+            <Route path="*" element={<Feed />} />
+          </Routes>
+        </Suspense>
       </main>
 
       {/* Footer (Hidden on mobile feed to optimize scrolling snap experience) */}
