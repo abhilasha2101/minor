@@ -1,0 +1,211 @@
+.auth-page-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 160px);
+  padding: 20px 0;
+}
+
+.auth-box {
+  width: 100%;
+  max-width: 460px;
+  padding: 40px 32px;
+  transition: max-width var(--transition-normal);
+}
+
+/* Dynamically expand width when selecting interests for better layout structure */
+.auth-box:has(.interests-grid) {
+  max-width: 720px;
+}
+
+.auth-header {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.auth-header h2 {
+  font-size: 28px;
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+}
+
+.auth-subtitle {
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.auth-error-badge {
+  background-color: rgba(255, 23, 68, 0.08);
+  border: 1px solid rgba(255, 23, 68, 0.2);
+  color: var(--color-false);
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-fields-group {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  animation: fade-in 0.3s forwards;
+}
+
+.input-field-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-field-icon {
+  position: absolute;
+  left: 14px;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.input-field-wrapper input {
+  width: 100%;
+  padding: 14px 14px 14px 44px;
+  border-radius: var(--radius-sm);
+  background-color: var(--input-bg);
+  border: 1px solid var(--border-light);
+  color: var(--text-primary);
+  font-size: 14px;
+  transition: all var(--transition-fast);
+}
+
+.input-field-wrapper input:focus {
+  outline: none;
+  background-color: var(--bg-secondary);
+  border-color: var(--input-focus-border);
+  box-shadow: 0 0 0 3px rgba(124, 131, 255, 0.15);
+}
+
+.auth-submit-btn {
+  width: 100%;
+  padding: 14px;
+  margin-top: 8px;
+}
+
+/* Interest Selectors Step Grid */
+.interests-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.interest-selection-card {
+  background-color: var(--input-bg);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: left;
+  transition: all var(--transition-fast);
+}
+
+.interest-selection-card:hover {
+  border-color: var(--border-medium);
+  background-color: var(--bg-tertiary);
+  transform: translateY(-2px);
+}
+
+.interest-selection-card.selected {
+  border-color: #7c83ff;
+  background-color: rgba(124, 131, 255, 0.05);
+  box-shadow: 0 0 0 2px rgba(124, 131, 255, 0.15);
+}
+
+.interest-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.interest-emoji {
+  font-size: 22px;
+}
+
+.interest-checkbox {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  border: 1.5px solid var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.interest-selection-card.selected .interest-checkbox {
+  background: var(--grad-primary);
+  border-color: transparent;
+}
+
+.interest-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.interest-desc {
+  font-size: 11px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+.signup-nav-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.auth-footer-toggle {
+  text-align: center;
+  margin-top: 24px;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.auth-toggle-btn {
+  color: #7c83ff;
+  font-weight: 700;
+  text-decoration: underline;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0 4px;
+}
+
+.auth-toggle-btn:hover {
+  color: #c678ff;
+}
+
+@media (max-width: 640px) {
+  .interests-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .auth-box {
+    padding: 32px 20px;
+    border: none;
+    box-shadow: none;
+    background: transparent;
+  }
+  .interests-grid {
+    grid-template-columns: 1fr;
+  }
+}

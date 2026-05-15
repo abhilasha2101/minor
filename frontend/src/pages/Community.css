@@ -1,0 +1,309 @@
+.community-page-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.community-hero {
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.community-hero h1 {
+  font-size: 38px;
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+}
+
+.community-hero p {
+  color: var(--text-secondary);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.community-error {
+  background-color: rgba(255, 23, 68, 0.08);
+  border: 1px solid rgba(255, 23, 68, 0.2);
+  color: var(--color-false);
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  text-align: center;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+/* Page Layout */
+.community-layout-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+@media (max-width: 992px) {
+  .community-layout-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.requests-feed-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.requests-feed-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.requests-feed-header h3 {
+  font-size: 18px;
+}
+
+.add-req-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Post Request Form */
+.post-request-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background-color: var(--bg-secondary);
+  border-color: var(--border-medium);
+}
+
+.form-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.form-title-row h4 {
+  font-size: 15px;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+}
+
+.close-form-btn {
+  font-size: 16px;
+  color: var(--text-muted);
+}
+
+.close-form-btn:hover {
+  color: var(--text-primary);
+}
+
+.form-inputs-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.form-inputs-group textarea {
+  width: 100%;
+  height: 90px;
+  background-color: var(--input-bg);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  color: var(--text-primary);
+  font-size: 13px;
+  line-height: 1.5;
+  resize: none;
+}
+
+.form-inputs-group textarea:focus {
+  outline: none;
+  background-color: var(--bg-secondary);
+  border-color: var(--input-focus-border);
+}
+
+.form-controls-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.select-cat-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.select-cat-wrapper select {
+  padding: 6px 12px;
+  border-radius: var(--radius-xs);
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-light);
+  color: var(--text-primary);
+  outline: none;
+}
+
+.send-req-btn {
+  padding: 8px 16px;
+}
+
+/* Requests Stack Cards */
+.requests-cards-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.request-card {
+  display: flex;
+  padding: 16px 20px;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+/* Upvote panel section */
+.request-card-votes {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.upvote-action-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  color: var(--text-muted);
+  transition: all var(--transition-fast);
+}
+
+.upvote-action-btn:hover {
+  color: var(--text-primary);
+  transform: translateY(-2px);
+}
+
+.upvote-action-btn.voted {
+  color: #7c83ff;
+}
+
+.upvote-action-btn.voted svg {
+  fill: rgba(124, 131, 255, 0.2);
+}
+
+.votes-count {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* Request info details */
+.request-card-info {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.request-info-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.req-category-badge {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  color: #7c83ff;
+  border: 1px solid rgba(124, 131, 255, 0.2);
+  background-color: rgba(124, 131, 255, 0.05);
+  padding: 2px 6px;
+  border-radius: var(--radius-xs);
+  text-transform: uppercase;
+}
+
+.req-author {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.request-claim-text {
+  font-size: 14px;
+  color: var(--text-primary);
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+.request-actions-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 4px;
+}
+
+/* Status Badges */
+.req-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.req-status-badge.verified {
+  color: var(--color-true);
+}
+
+.req-status-badge.pending {
+  color: var(--color-misleading);
+}
+
+.verify-req-trigger {
+  padding: 4px 10px;
+  font-size: 10px;
+}
+
+/* Sidebar styling */
+.community-info-sidebar {
+  padding: 24px;
+}
+
+.community-info-sidebar h4 {
+  font-size: 15px;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.sidebar-steps-list {
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.sidebar-steps-list li::marker {
+  font-family: var(--font-mono);
+  color: #7c83ff;
+  font-weight: 700;
+}
+
+@media (max-width: 480px) {
+  .request-card {
+    gap: 12px;
+    padding: 12px;
+  }
+}
