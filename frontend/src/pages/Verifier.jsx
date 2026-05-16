@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import { useToast } from '../context/ToastContext';
 import { verifyNewsClaim, parseVerificationResponse, verifyImageClaim, submitFeedback } from '../services/api';
-import { ShieldCheck, Upload, Trash2, HelpCircle, Check, ThumbsUp, ThumbsDown, ArrowRight, Clipboard, AlertCircle, Activity } from 'lucide-react';
+import { ShieldCheck, Upload, Trash2, HelpCircle, Check, ThumbsUp, ThumbsDown, ArrowRight, Clipboard, AlertCircle, Activity, Share2 } from 'lucide-react';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, Tooltip } from 'recharts';
 import './Verifier.css';
 
@@ -211,6 +211,22 @@ export default function Verifier() {
     });
   };
 
+  const handleShareResult = async () => {
+    if (!result || !navigator.share) return;
+    const text = `VERITAS AI VERIFICATION REPORT\nVerdict: ${result.verdict} (${result.confidence}% Confidence)\nSummary: ${result.summary}`;
+    try {
+      await navigator.share({
+        title: 'Veritas AI Report',
+        text: text,
+      });
+      addToast('Shared successfully!', 'success');
+    } catch (err) {
+      if (err.name !== 'AbortError') {
+        addToast('Sharing failed.', 'error');
+      }
+    }
+  };
+
   const resetVerifier = () => {
     setClaimText('');
     clearImage();
@@ -330,12 +346,18 @@ export default function Verifier() {
                 )}
               </div>
 
-              {/* Copy Report Button */}
-              <div className="report-brief-actions">
-                <button onClick={handleCopyResult} className="btn btn-secondary block-btn">
+              {/* Actions Section */}
+              <div className="report-brief-actions" style={{ display: 'flex', gap: '8px' }}>
+                <button onClick={handleCopyResult} className="btn btn-secondary block-btn" style={{ flex: 1 }}>
                   {copied ? <Check size={16} color="var(--color-true)" /> : <Clipboard size={16} />}
-                  <span>{copied ? 'Copied to Clipboard' : 'Copy Full Report'}</span>
+                  <span>{copied ? 'Copied' : 'Copy'}</span>
                 </button>
+                {navigator.share && (
+                  <button onClick={handleShareResult} className="btn btn-secondary block-btn" style={{ flex: 1 }}>
+                    <Share2 size={16} />
+                    <span>Share</span>
+                  </button>
+                )}
               </div>
             </div>
           )}
