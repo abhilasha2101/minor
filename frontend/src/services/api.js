@@ -245,6 +245,18 @@ export async function getUserStats() {
   return apiRequest(`${API_BASE}/profile/stats`);
 }
 
+/**
+ * Update user profile details (bio, location, username).
+ * @param {object} details
+ * @returns {Promise<object>}
+ */
+export async function updateProfileDetails(details) {
+  return apiRequest(`${API_BASE}/profile/details`, {
+    method: 'PUT',
+    body: JSON.stringify(details)
+  });
+}
+
 // ──────────────────────────────────────────────
 // Community Endpoints
 // ──────────────────────────────────────────────

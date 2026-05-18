@@ -537,6 +537,18 @@ export function AppProvider({ children }) {
     setHistory([]);
   }, []);
 
+  const updateUserProfile = useCallback(async (details) => {
+    if (!user) return;
+    try {
+      const data = await api.updateProfileDetails(details);
+      setUser(data.user);
+      return data;
+    } catch (err) {
+      console.error('Update profile error:', err.message);
+      throw err;
+    }
+  }, [user]);
+
   // ── Bookmark Actions ──
   async function fetchBookmarks() {
     try {
@@ -657,6 +669,7 @@ export function AppProvider({ children }) {
       login,
       signup,
       logout,
+      updateUserProfile,
       bookmarks,
       addBookmark,
       removeBookmark,
