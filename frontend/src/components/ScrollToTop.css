@@ -1,0 +1,50 @@
+.scroll-to-top {
+  position: fixed;
+  bottom: 40px;
+  right: 40px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: rgba(15, 17, 26, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(124, 131, 255, 0.3);
+  color: #7c83ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(20px);
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+.scroll-to-top.visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.scroll-to-top:hover {
+  background: rgba(124, 131, 255, 0.15);
+  border-color: rgba(124, 131, 255, 0.6);
+  transform: translateY(-5px);
+  box-shadow: 0 12px 40px rgba(124, 131, 255, 0.2), inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+.scroll-to-top:active {
+  transform: translateY(0);
+}
+
+@media (max-width: 768px) {
+  .scroll-to-top {
+    bottom: 80px; /* above the mobile navigation or footer */
+    right: 20px;
+    width: 45px;
+    height: 45px;
+  }
+}

@@ -2,6 +2,7 @@ import { useState, useEffect, Suspense, lazy } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { useApp } from './context/AppContext';
 import Navbar from './components/Navbar';
+import ScrollToTop from './components/ScrollToTop';
 import { ShieldCheck, Heart, Loader2 } from 'lucide-react';
 
 // Lazy-loaded routes for performance optimization
@@ -97,6 +98,9 @@ export default function App() {
           </div>
         </footer>
       )}
+
+      {/* Global Scroll to Top Navigation Helper */}
+      <ScrollToTop />
 
       {/* CSS overrides for footer */}
       <style>{`
