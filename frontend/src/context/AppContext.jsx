@@ -105,7 +105,7 @@ const INITIAL_NEWS_ARTICLES = [
     category: 'Sports',
     summary: 'The international football federation has announced a controversial expansion of the global tournament structure, boosting the number of competing nations from 48 to 64.',
     fullArticle: 'A widely circulated infographic claims the world football governing body has approved a 64-team tournament format for the 2030 event. Official channels confirmed that the 2026 and 2030 tournaments are locked into the newly designed 48-team group stage format. No discussions regarding a further expansion to 64 teams have been tabled. The graphic was trace-linked to a conceptual fan art forum exploring hypothetical tournament formats.',
-    imageUrl: 'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=800&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1575361204480-aadea25e6e68?auto=format&fit=crop&w=800&q=80',
     date: '2026-06-07',
     author: 'Sports Fact Desk',
     verifiedStatus: 'FALSE',
