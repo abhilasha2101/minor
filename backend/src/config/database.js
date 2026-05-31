@@ -43,8 +43,23 @@ export function initializeSchema() {
       password      TEXT    NOT NULL,
       interests     TEXT    DEFAULT '[]',
       avatar_color  TEXT    DEFAULT '#7c83ff',
+      bio           TEXT    DEFAULT '',
+      location      TEXT    DEFAULT '',
+      reputation_score INTEGER DEFAULT 0,
       created_at    TEXT    DEFAULT (datetime('now'))
     );
+
+    -- Try to add new columns if they don't exist (fails silently if they do)
+    BEGIN;
+    PRAGMA user_version;
+    COMMIT;
+  `);
+
+  try { database.exec('ALTER TABLE users ADD COLUMN bio TEXT DEFAULT ""'); } catch (e) {}
+  try { database.exec('ALTER TABLE users ADD COLUMN location TEXT DEFAULT ""'); } catch (e) {}
+  try { database.exec('ALTER TABLE users ADD COLUMN reputation_score INTEGER DEFAULT 0'); } catch (e) {}
+
+  database.exec(`
 
     CREATE TABLE IF NOT EXISTS claims_history (
       id              TEXT    PRIMARY KEY,
