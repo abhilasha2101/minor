@@ -54,23 +54,7 @@ export async function verifyTextClaim(claim, apiKey) {
             { role: 'user', parts: [{ text: `Verify this news claim: "${claim}"` }] }
           ],
           systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
-          tools: [{ google_search: {} }],
-          generationConfig: {
-            responseMimeType: 'application/json',
-            responseSchema: {
-              type: 'OBJECT',
-              properties: {
-                verdict: { type: 'STRING', enum: ['TRUE', 'FALSE', 'MISLEADING', 'UNVERIFIED'] },
-                confidence: { type: 'INTEGER' },
-                summary: { type: 'STRING' },
-                key_findings: { type: 'ARRAY', items: { type: 'STRING' } },
-                sources_checked: { type: 'ARRAY', items: { type: 'STRING' } },
-                red_flags: { type: 'ARRAY', items: { type: 'STRING' } },
-                advice: { type: 'STRING' }
-              },
-              required: ['verdict', 'confidence', 'summary']
-            }
-          }
+          tools: [{ google_search: {} }]
         })
       }
     );
@@ -123,23 +107,7 @@ export async function verifyImageClaim(base64Image, apiKey) {
             }
           ],
           systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
-          tools: [{ google_search: {} }],
-          generationConfig: {
-            responseMimeType: 'application/json',
-            responseSchema: {
-              type: 'OBJECT',
-              properties: {
-                verdict: { type: 'STRING', enum: ['TRUE', 'FALSE', 'MISLEADING', 'UNVERIFIED'] },
-                confidence: { type: 'INTEGER' },
-                summary: { type: 'STRING' },
-                key_findings: { type: 'ARRAY', items: { type: 'STRING' } },
-                sources_checked: { type: 'ARRAY', items: { type: 'STRING' } },
-                red_flags: { type: 'ARRAY', items: { type: 'STRING' } },
-                advice: { type: 'STRING' }
-              },
-              required: ['verdict', 'confidence', 'summary']
-            }
-          }
+          tools: [{ google_search: {} }]
         })
       }
     );
