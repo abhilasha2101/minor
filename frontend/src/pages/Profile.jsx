@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
-import { User, LogOut, Bookmark, History, Settings, Trash2, Search, CheckCircle, XCircle, AlertTriangle, HelpCircle } from 'lucide-react';
+import { User, LogOut, Bookmark, History, Settings, Trash2, Search, CheckCircle, XCircle, AlertTriangle, HelpCircle, RefreshCw } from 'lucide-react';
 import './Profile.css';
 
 const INTERESTS_MAP = {
@@ -14,11 +14,37 @@ const INTERESTS_MAP = {
 };
 
 export default function Profile() {
-  const { user, logout, bookmarks, removeBookmark, history, clearHistory, login } = useApp();
+  const { user, logout, bookmarks, removeBookmark, history, clearHistory, login, updateUserProfile } = useApp();
   const navigate = useNavigate();
 
-  const [activeTab, setActiveTab] = useState('saved'); // 'saved' or 'history' or 'settings'
+  const [activeTab, setActiveTab] = useState('overview'); // 'overview', 'saved', 'history', 'settings'
   const [historySearch, setHistorySearch] = useState('');
+  const [isEditing, setIsEditing] = useState(false);
+  const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
+  const [avatarSeeds, setAvatarSeeds] = useState(['Oliver', 'Jack', 'Harry', 'Jacob', 'Charlie', 'Thomas']);
+  const [editForm, setEditForm] = useState({ username: '', bio: '', location: '' });
+
+  const shuffleSeeds = () => {
+    setAvatarSeeds(Array.from({length: 6}, () => Math.random().toString(36).substring(7)));
+  };
+
+  const handleEditClick = () => {
+    setEditForm({
+      username: user.username || '',
+      bio: user.bio || '',
+      location: user.location || ''
+    });
+    setIsEditing(true);
+  };
+
+  const handleSaveProfile = async () => {
+    try {
+      await updateUserProfile(editForm);
+      setIsEditing(false);
+    } catch (e) {
+      alert('Failed to update profile: ' + e.message);
+    }
+  };
 
   if (!user) {
     // If not logged in, show a call to action redirect panel
@@ -75,22 +101,113 @@ export default function Profile() {
   // Calculate fact-checking accuracy score (mock value based on profile history + mock inputs)
   const calculateAccuracy = () => {
     if (history.length === 0) return 0;
-    // Just a fun mock calculation: more true/false verified claims gives higher accuracy
-    const verities = history.filter(h => h.result.verdict === 'TRUE' || h.result.verdict === 'FALSE').length;
+    const verities = history.filter(h => h.result?.verdict === 'TRUE' || h.result?.verdict === 'FALSE').length;
     return Math.round((verities / history.length) * 100);
+  };
+
+  const getTrustLevel = (score) => {
+    if (score >= 500) return 'Expert Analyst';
+    if (score >= 200) return 'Fact Checker';
+    if (score >= 50) return 'Skeptic';
+    return 'Novice';
   };
 
   return (
     <div className="profile-page-container">
       {/* User Header Profile */}
-      <div className="profile-hero-header glass-card">
-        <div className="profile-info-left">
-          <div className="profile-avatar">
-            {user.username.slice(0, 2).toUpperCase()}
+      <div className="profile-hero-header glass-card" style={{ zIndex: 50 }}>
+        <div className="profile-info-left" style={{ position: 'relative', zIndex: 9999 }}>
+          <div 
+            className="profile-avatar avatar-3d" 
+            style={{ overflow: 'hidden', cursor: 'pointer', pointerEvents: 'auto' }}
+            onClick={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
+              console.log("Avatar clicked, toggling modal");
+              setIsAvatarModalOpen(prev => !prev);
+            }}
+            title="Click to change avatar"
+          >
+            {user.avatarUrl ? (
+              <img src={user.avatarUrl} alt="Avatar" style={{ width: '100%', height: '100%', objectFit: 'cover', pointerEvents: 'none' }} />
+            ) : (
+              <span style={{ pointerEvents: 'none' }}>{user.username.slice(0, 2).toUpperCase()}</span>
+            )}
           </div>
+          
+          {isAvatarModalOpen && (
+            <div className="avatar-edit-modal glass-card" style={{ zIndex: 9999, backgroundColor: 'var(--bg-primary)', display: 'block', opacity: 1, width: '300px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                <h3 style={{ fontSize: '14px', margin: 0 }}>Choose Avatar</h3>
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <button onClick={shuffleSeeds} className="btn-close" title="Shuffle More" style={{ display: 'flex', padding: '4px' }}><RefreshCw size={14} /></button>
+                  <button onClick={() => setIsAvatarModalOpen(false)} className="btn-close" style={{ display: 'flex', padding: '4px' }}><XCircle size={16} /></button>
+                </div>
+              </div>
+              
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px', marginBottom: '16px' }}>
+                {avatarSeeds.map(seed => (
+                  <img 
+                    key={seed}
+                    src={`https://api.dicebear.com/9.x/micah/svg?seed=${seed}&radius=50&backgroundColor=b6e3f4,c0aede,d1d4f9`}
+                    alt="Avatar Option"
+                    title="Select this avatar"
+                    style={{ width: '100%', borderRadius: '50%', cursor: 'pointer', border: '2px solid transparent', transition: 'border-color 0.2s' }}
+                    onClick={async () => {
+                      await updateUserProfile({ avatarUrl: `https://api.dicebear.com/9.x/micah/svg?seed=${seed}&radius=50&backgroundColor=b6e3f4,c0aede,d1d4f9` });
+                      setIsAvatarModalOpen(false);
+                    }}
+                    onMouseEnter={(e) => e.target.style.borderColor = '#7c83ff'}
+                    onMouseLeave={(e) => e.target.style.borderColor = 'transparent'}
+                  />
+                ))}
+              </div>
+
+              <div className="avatar-edit-controls" style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', borderTop: '1px solid var(--border-light)', paddingTop: '12px' }}>
+                <div style={{ position: 'relative', overflow: 'hidden', display: 'inline-block', flex: 1 }}>
+                  <button className="btn btn-secondary" style={{ width: '100%', padding: '6px 10px', fontSize: '12px' }}>
+                    📷 Upload Custom
+                  </button>
+                  <input 
+                    type="file" 
+                    accept="image/*" 
+                    onChange={async (e) => {
+                      const file = e.target.files[0];
+                      if (file) {
+                        const reader = new FileReader();
+                        reader.onloadend = async () => {
+                          await updateUserProfile({ avatarUrl: reader.result });
+                          setIsAvatarModalOpen(false);
+                        };
+                        reader.readAsDataURL(file);
+                      }
+                    }}
+                    style={{ position: 'absolute', top: 0, left: 0, opacity: 0, cursor: 'pointer', width: '100%', height: '100%' }}
+                  />
+                </div>
+                
+                {user.avatarUrl && (
+                  <button 
+                    className="btn btn-secondary" 
+                    style={{ padding: '6px 10px', fontSize: '12px', color: 'var(--color-false)' }} 
+                    onClick={async () => {
+                      await updateUserProfile({ avatarUrl: '' });
+                      setIsAvatarModalOpen(false);
+                    }}
+                  >
+                    Remove
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
+
           <div className="profile-names">
             <h2>{user.username}</h2>
             <span className="profile-email">{user.email}</span>
+            <button onClick={handleEditClick} className="btn btn-secondary edit-profile-btn">
+              <Settings size={14} /> Edit Profile
+            </button>
           </div>
         </div>
         
@@ -99,6 +216,42 @@ export default function Profile() {
           <span>Sign Out</span>
         </button>
       </div>
+
+      {isEditing && (
+        <div className="edit-profile-modal glass-card animate-fade">
+          <h3>Edit Profile</h3>
+          
+          <div className="form-group">
+            <label>Username</label>
+            <input 
+              type="text" 
+              value={editForm.username} 
+              onChange={e => setEditForm({...editForm, username: e.target.value})} 
+            />
+          </div>
+          <div className="form-group">
+            <label>Bio</label>
+            <textarea 
+              value={editForm.bio} 
+              onChange={e => setEditForm({...editForm, bio: e.target.value})} 
+              placeholder="Tell us about yourself"
+            />
+          </div>
+          <div className="form-group">
+            <label>Location</label>
+            <input 
+              type="text" 
+              value={editForm.location} 
+              onChange={e => setEditForm({...editForm, location: e.target.value})} 
+              placeholder="E.g., New Delhi, India"
+            />
+          </div>
+          <div className="edit-modal-actions">
+            <button onClick={() => setIsEditing(false)} className="btn btn-secondary">Cancel</button>
+            <button onClick={handleSaveProfile} className="btn btn-primary">Save Changes</button>
+          </div>
+        </div>
+      )}
 
       {/* Metrics Row */}
       <div className="profile-metrics-row">
@@ -111,13 +264,24 @@ export default function Profile() {
           <span className="metric-label">Saved Articles</span>
         </div>
         <div className="metric-card glass-card">
-          <span className="metric-value">{history.length > 0 ? `${calculateAccuracy()}%` : 'N/A'}</span>
-          <span className="metric-label">Skepticism Score</span>
+          <span className="metric-value">{user.reputationScore || 0}</span>
+          <span className="metric-label">Reputation Points</span>
+        </div>
+        <div className="metric-card glass-card highlight-metric">
+          <span className="metric-value trust-level">{getTrustLevel(user.reputationScore || 0)}</span>
+          <span className="metric-label">Trust Level</span>
         </div>
       </div>
 
       {/* Profile Navigation Tabs */}
       <div className="profile-tabs-strip">
+        <button 
+          onClick={() => setActiveTab('overview')} 
+          className={`profile-tab-btn ${activeTab === 'overview' ? 'active' : ''}`}
+        >
+          <User size={16} />
+          <span>Overview</span>
+        </button>
         <button 
           onClick={() => setActiveTab('saved')} 
           className={`profile-tab-btn ${activeTab === 'saved' ? 'active' : ''}`}
@@ -143,6 +307,40 @@ export default function Profile() {
 
       {/* Tab Panels */}
       <div className="profile-tab-content">
+        {activeTab === 'overview' && (
+          <div className="profile-overview-panel animate-fade">
+            <div className="overview-grid">
+              <div className="overview-bio-card glass-card">
+                <h3>About Me</h3>
+                <p className="bio-text">{user.bio || 'No bio added yet. Tell us about yourself!'}</p>
+                <div className="location-info">
+                  <strong>Location:</strong> {user.location || 'Not specified'}
+                </div>
+              </div>
+              <div className="overview-stats-card glass-card">
+                <h3>Trust Reputation</h3>
+                <div className="reputation-badge">
+                  <span className="reputation-score">{user.reputationScore || 0}</span>
+                  <span className="reputation-label">Pts</span>
+                </div>
+                <p>Level up by verifying claims and contributing to the community.</p>
+              </div>
+              <div className="overview-interests-card glass-card">
+                <h3>My Interests</h3>
+                <div className="interests-tags">
+                  {user.interests && user.interests.length > 0 ? (
+                    user.interests.map(id => (
+                      <span key={id} className="interest-tag">{INTERESTS_MAP[id]}</span>
+                    ))
+                  ) : (
+                    <p>No interests selected. Update in News Settings.</p>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         {activeTab === 'saved' && (
           <div className="saved-articles-panel animate-fade">
             {bookmarks.length === 0 ? (
@@ -220,12 +418,12 @@ export default function Profile() {
                       <span 
                         className="hist-verdict-badge"
                         style={{ 
-                          color: getVerdictLabelColor(item.result.verdict),
-                          borderColor: getVerdictLabelColor(item.result.verdict) + '44',
-                          backgroundColor: getVerdictLabelColor(item.result.verdict) + '11'
+                          color: getVerdictLabelColor(item.result?.verdict),
+                          borderColor: getVerdictLabelColor(item.result?.verdict) + '44',
+                          backgroundColor: getVerdictLabelColor(item.result?.verdict) + '11'
                         }}
                       >
-                        {item.result.verdict}
+                        {item.result?.verdict || 'UNVERIFIED'}
                       </span>
                     </div>
                   </div>
