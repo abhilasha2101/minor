@@ -12,6 +12,7 @@ const CurrentAffairs = lazy(() => import('./pages/CurrentAffairs'));
 const Community = lazy(() => import('./pages/Community'));
 const Profile = lazy(() => import('./pages/Profile'));
 const Auth = lazy(() => import('./pages/Auth'));
+const NotFound = lazy(() => import('./pages/NotFound'));
 
 export default function App() {
   const { theme } = useApp();
@@ -77,7 +78,7 @@ export default function App() {
             <Route path="/community" element={<Community />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/auth" element={<Auth />} />
-            <Route path="*" element={<Feed />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>
       </main>
