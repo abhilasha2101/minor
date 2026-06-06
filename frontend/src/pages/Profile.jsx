@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
+import { useToast } from '../context/ToastContext';
 import { User, LogOut, Bookmark, History, Settings, Trash2, Search, CheckCircle, XCircle, AlertTriangle, HelpCircle, RefreshCw } from 'lucide-react';
 import './Profile.css';
 
@@ -15,6 +16,7 @@ const INTERESTS_MAP = {
 
 export default function Profile() {
   const { user, logout, bookmarks, removeBookmark, history, clearHistory, login, updateUserProfile } = useApp();
+  const { addToast } = useToast();
   const navigate = useNavigate();
 
   const [activeTab, setActiveTab] = useState('overview'); // 'overview', 'saved', 'history', 'settings'
@@ -88,6 +90,11 @@ export default function Profile() {
 
   const handleReviewClaim = (claimText) => {
     navigate('/verifier', { state: { claim: claimText } });
+  };
+
+  const handleClearHistory = () => {
+    clearHistory();
+    addToast('Verification history cleared successfully', 'success');
   };
 
   // Get Verdict label colors
@@ -389,7 +396,7 @@ export default function Profile() {
               </div>
 
               {history.length > 0 && (
-                <button onClick={clearHistory} className="btn btn-secondary clear-hist-btn">
+                <button onClick={handleClearHistory} className="btn btn-secondary clear-hist-btn">
                   <Trash2 size={14} />
                   <span>Clear Log</span>
                 </button>
