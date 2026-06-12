@@ -66,9 +66,9 @@ export function updateInterests(userId, interests) {
 }
 
 /**
- * Update user profile fields (username, avatar_color).
+ * Update user profile fields (username, avatar_color, bio, location, avatar_url).
  * @param {number} userId
- * @param {{ username?: string, avatarColor?: string }} fields
+ * @param {{ username?: string, avatarColor?: string, bio?: string, location?: string, avatarUrl?: string }} fields
  * @returns {boolean} Success
  */
 export function updateProfile(userId, fields) {
@@ -76,13 +76,25 @@ export function updateProfile(userId, fields) {
   const updates = [];
   const values = [];
 
-  if (fields.username) {
+  if (fields.username !== undefined) {
     updates.push('username = ?');
     values.push(fields.username);
   }
-  if (fields.avatarColor) {
+  if (fields.avatarColor !== undefined) {
     updates.push('avatar_color = ?');
     values.push(fields.avatarColor);
+  }
+  if (fields.bio !== undefined) {
+    updates.push('bio = ?');
+    values.push(fields.bio);
+  }
+  if (fields.location !== undefined) {
+    updates.push('location = ?');
+    values.push(fields.location);
+  }
+  if (fields.avatarUrl !== undefined) {
+    updates.push('avatar_url = ?');
+    values.push(fields.avatarUrl);
   }
 
   if (updates.length === 0) return false;

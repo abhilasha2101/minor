@@ -74,7 +74,8 @@
 
 .nav-link:hover {
   color: var(--text-primary);
-  background-color: var(--border-light);
+  background-color: rgba(124, 131, 255, 0.1);
+  box-shadow: 0 0 12px rgba(124, 131, 255, 0.3);
 }
 
 .nav-link.active {

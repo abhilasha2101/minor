@@ -43,6 +43,7 @@ export function initializeSchema() {
       password      TEXT    NOT NULL,
       interests     TEXT    DEFAULT '[]',
       avatar_color  TEXT    DEFAULT '#7c83ff',
+      avatar_url    TEXT    DEFAULT '',
       bio           TEXT    DEFAULT '',
       location      TEXT    DEFAULT '',
       reputation_score INTEGER DEFAULT 0,
@@ -58,6 +59,7 @@ export function initializeSchema() {
   try { database.exec('ALTER TABLE users ADD COLUMN bio TEXT DEFAULT ""'); } catch (e) {}
   try { database.exec('ALTER TABLE users ADD COLUMN location TEXT DEFAULT ""'); } catch (e) {}
   try { database.exec('ALTER TABLE users ADD COLUMN reputation_score INTEGER DEFAULT 0'); } catch (e) {}
+  try { database.exec('ALTER TABLE users ADD COLUMN avatar_url TEXT DEFAULT ""'); } catch (e) {}
 
   database.exec(`
 

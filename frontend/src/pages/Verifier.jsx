@@ -2,7 +2,8 @@ import { useState, useRef, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import { verifyNewsClaim, parseVerificationResponse, verifyImageClaim, submitFeedback } from '../services/api';
-import { ShieldCheck, Upload, Trash2, HelpCircle, Check, ThumbsUp, ThumbsDown, ArrowRight, Share2, Clipboard, AlertCircle } from 'lucide-react';
+import { ShieldCheck, Upload, Trash2, HelpCircle, Check, ThumbsUp, ThumbsDown, ArrowRight, Clipboard, AlertCircle, Activity } from 'lucide-react';
+import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, Tooltip } from 'recharts';
 import './Verifier.css';
 
 const VERDICT_CONFIG = {
@@ -62,6 +63,19 @@ export default function Verifier() {
   // Verification Results
   const [result, setResult] = useState(null);
   const [copied, setCopied] = useState(false);
+  const [activeTab, setActiveTab] = useState('summary');
+
+  const getRadarData = (analysis) => {
+    if (!analysis) return [];
+    return [
+      { subject: 'Factuality', A: analysis.factuality, fullMark: 100 },
+      { subject: 'Objectivity', A: analysis.objectivity, fullMark: 100 },
+      { subject: 'Sensational', A: analysis.sensationalism, fullMark: 100 },
+      { subject: 'Emotional', A: analysis.emotionalTone, fullMark: 100 },
+      { subject: 'Logic', A: analysis.logicalConsistency, fullMark: 100 },
+      { subject: 'Credibility', A: analysis.sourceCredibility, fullMark: 100 }
+    ];
+  };
   
   // Feedback Widget states
   const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
@@ -91,6 +105,7 @@ export default function Verifier() {
     setResult(null);
     setError(null);
     setFeedbackSubmitted(false);
+    setActiveTab('summary');
 
     const stageTimerRef = { current: null };
     startStageScroller(stageTimerRef);
@@ -175,7 +190,7 @@ export default function Verifier() {
     try {
       await submitFeedback(result.summary, isPositive);
       setFeedbackSubmitted(true);
-    } catch (e) {
+    } catch {
       setFeedbackSubmitted(true); // fall-through gracefully for mockup verification
     }
   };
@@ -362,94 +377,144 @@ export default function Verifier() {
           {/* Verification Results Display */}
           {result && cfg && (
             <div className="verifier-results-wrapper animate-fade">
-              {/* Verdict Hero Card */}
-              <div className="verdict-hero-container glass-card" style={{ borderColor: cfg.border, background: cfg.bg }}>
-                <div className="verdict-hero-left">
-                  <div className="verdict-badge-row" style={{ color: cfg.color }}>
-                    <span className="verdict-icon">{cfg.icon}</span>
-                    <span className="verdict-badge-label">{cfg.label}</span>
-                  </div>
-                  <h3 className="verdict-summary-title">Summary Verdict</h3>
-                  <p className="verdict-summary-text">{result.summary}</p>
+              
+              {/* Tabs */}
+              {result.deepAnalysis && (
+                <div className="analysis-tabs-strip">
+                  <button 
+                    className={`analysis-tab-btn ${activeTab === 'summary' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('summary')}
+                  >
+                    Executive Summary
+                  </button>
+                  <button 
+                    className={`analysis-tab-btn ${activeTab === 'analysis' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('analysis')}
+                  >
+                    <Activity size={14} />
+                    Deep Bias Radar
+                  </button>
                 </div>
+              )}
 
-                <div className="verdict-hero-right">
-                  {/* Circle Progress Bar */}
-                  <div className="confidence-circle-wrapper">
-                    <svg width="120" height="120" viewBox="0 0 120 120">
-                      <circle 
-                        cx="60" 
-                        cy="60" 
-                        r={radius} 
-                        className="circle-bg" 
-                      />
-                      <circle 
-                        cx="60" 
-                        cy="60" 
-                        r={radius} 
-                        className="circle-progress"
-                        style={{
-                          strokeDasharray: circumference,
-                          strokeDashoffset: strokeDashoffset,
-                          stroke: cfg.color
-                        }}
-                      />
-                    </svg>
-                    <div className="circle-score-label">
-                      <span className="score-value">{result.confidence}%</span>
-                      <span className="score-text">CONFIDENCE</span>
+              {activeTab === 'summary' ? (
+                <>
+                  {/* Verdict Hero Card */}
+                  <div className="verdict-hero-container glass-card" style={{ borderColor: cfg.border, background: cfg.bg }}>
+                    <div className="verdict-hero-left">
+                      <div className="verdict-badge-row" style={{ color: cfg.color }}>
+                        <span className="verdict-icon">{cfg.icon}</span>
+                        <span className="verdict-badge-label">{cfg.label}</span>
+                      </div>
+                      <h3 className="verdict-summary-title">Summary Verdict</h3>
+                      <p className="verdict-summary-text">{result.summary}</p>
+                    </div>
+
+                    <div className="verdict-hero-right">
+                      {/* Circle Progress Bar */}
+                      <div className="confidence-circle-wrapper">
+                        <svg width="120" height="120" viewBox="0 0 120 120">
+                          <circle 
+                            cx="60" 
+                            cy="60" 
+                            r={radius} 
+                            className="circle-bg" 
+                          />
+                          <circle 
+                            cx="60" 
+                            cy="60" 
+                            r={radius} 
+                            className="circle-progress"
+                            style={{
+                              strokeDasharray: circumference,
+                              strokeDashoffset: strokeDashoffset,
+                              stroke: cfg.color
+                            }}
+                          />
+                        </svg>
+                        <div className="circle-score-label">
+                          <span className="score-value">{result.confidence}%</span>
+                          <span className="score-text">CONFIDENCE</span>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </div>
 
-              {/* Grid Section for Findings, Sources, Red Flags */}
-              <div className="results-breakdown-grid">
-                <div className="breakdown-col-findings glass-card">
-                  <h4>Key Findings</h4>
-                  <ul className="findings-list">
-                    {result.key_findings.map((finding, idx) => (
-                      <li key={idx}>
-                        <span className="bullet" style={{ color: cfg.color }}>▸</span>
-                        <p>{finding}</p>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                <div className="breakdown-col-details">
-                  {/* Red flags if exist */}
-                  {result.red_flags?.length > 0 && (
-                    <div className="breakdown-red-flags-card glass-card">
-                      <h4 className="title-red">⚠ Anomalous Indicators</h4>
-                      <ul className="red-flags-list">
-                        {result.red_flags.map((flag, idx) => (
-                          <li key={idx}>{flag}</li>
+                  {/* Grid Section for Findings, Sources, Red Flags */}
+                  <div className="results-breakdown-grid">
+                    <div className="breakdown-col-findings glass-card">
+                      <h4>Key Findings</h4>
+                      <ul className="findings-list">
+                        {result.key_findings.map((finding, idx) => (
+                          <li key={idx}>
+                            <span className="bullet" style={{ color: cfg.color }}>▸</span>
+                            <p>{finding}</p>
+                          </li>
                         ))}
                       </ul>
                     </div>
-                  )}
 
-                  {/* Sources checked cards */}
-                  <div className="breakdown-sources-card glass-card">
-                    <h4>Sources Verified</h4>
-                    <div className="sources-tags-row">
-                      {result.sources_checked.map((src, idx) => (
-                        <span key={idx} className="source-tag-pill">{src}</span>
-                      ))}
+                    <div className="breakdown-col-details">
+                      {/* Red flags if exist */}
+                      {result.red_flags?.length > 0 && (
+                        <div className="breakdown-red-flags-card glass-card">
+                          <h4 className="title-red">⚠ Anomalous Indicators</h4>
+                          <ul className="red-flags-list">
+                            {result.red_flags.map((flag, idx) => (
+                              <li key={idx}>{flag}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+
+                      {/* Sources checked cards */}
+                      <div className="breakdown-sources-card glass-card">
+                        <h4>Sources Verified</h4>
+                        <div className="sources-tags-row">
+                          {result.sources_checked.map((src, idx) => (
+                            <span key={idx} className="source-tag-pill">{src}</span>
+                          ))}
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </div>
 
-              {/* Advice and Guidance */}
-              {result.advice && (
-                <div className="results-advice-card glass-card">
-                  <div className="advice-header">
-                    <span className="bulb-emoji">💡</span>
-                    <h4>Media Literacy Advice</h4>
+                  {/* Advice and Guidance */}
+                  {result.advice && (
+                    <div className="results-advice-card glass-card">
+                      <div className="advice-header">
+                        <span className="bulb-emoji">💡</span>
+                        <h4>Media Literacy Advice</h4>
+                      </div>
+                      <p>{result.advice}</p>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <div className="deep-analysis-panel glass-card">
+                  <div className="analysis-header">
+                    <h3 className="gradient-text">Media Forensics Radar</h3>
+                    <p>Deep NLP evaluation of the psychological and journalistic parameters of the claim.</p>
                   </div>
-                  <p>{result.advice}</p>
+                  <div className="radar-chart-container" style={{ width: '100%', height: 350 }}>
+                    <ResponsiveContainer width="100%" height="100%">
+                      <RadarChart cx="50%" cy="50%" outerRadius="70%" data={getRadarData(result.deepAnalysis)}>
+                        <PolarGrid stroke="var(--border-medium)" />
+                        <PolarAngleAxis dataKey="subject" tick={{ fill: 'var(--text-secondary)', fontSize: 12, fontFamily: 'var(--font-mono)' }} />
+                        <PolarRadiusAxis angle={30} domain={[0, 100]} tick={{ fill: 'var(--text-muted)', fontSize: 10 }} />
+                        <Radar name="Claim Analysis" dataKey="A" stroke="#7c83ff" strokeWidth={2} fill="#7c83ff" fillOpacity={0.4} />
+                        <Tooltip 
+                          contentStyle={{ backgroundColor: 'var(--bg-tertiary)', borderColor: 'var(--border-light)', borderRadius: '8px' }}
+                          itemStyle={{ color: '#7c83ff', fontWeight: 700 }}
+                        />
+                      </RadarChart>
+                    </ResponsiveContainer>
+                  </div>
+                  <div className="analysis-insights">
+                     <p className="insight-text">
+                       <strong>Insight:</strong> This radar chart highlights how the news attempts to engage the reader. High sensationalism and emotional tone paired with low factuality typically indicates manipulative disinformation.
+                     </p>
+                  </div>
                 </div>
               )}
 

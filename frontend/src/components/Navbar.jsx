@@ -76,8 +76,12 @@ export default function Navbar() {
           {/* Auth/Profile Action */}
           {user ? (
             <Link to="/profile" className={`profile-nav-btn ${isActive('/profile') ? 'active' : ''}`}>
-              <div className="avatar-mini">
-                {user.username.slice(0, 2).toUpperCase()}
+              <div className="avatar-mini" style={{ overflow: 'hidden' }}>
+                {user.avatarUrl ? (
+                  <img src={user.avatarUrl} alt="Avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                ) : (
+                  user.username.slice(0, 2).toUpperCase()
+                )}
               </div>
               <span className="username-text">{user.username}</span>
             </Link>

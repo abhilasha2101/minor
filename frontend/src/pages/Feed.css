@@ -32,8 +32,9 @@
 }
 
 .category-pill:hover {
-  border-color: var(--border-medium);
+  border-color: #7c83ff;
   color: var(--text-primary);
+  box-shadow: 0 0 12px rgba(124, 131, 255, 0.3);
 }
 
 .category-pill.active {

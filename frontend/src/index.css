@@ -99,7 +99,13 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .glass-card:hover {
-  border-color: var(--border-medium);
+  border-color: #7c83ff;
+  box-shadow: 0 0 15px rgba(124, 131, 255, 0.3), var(--glass-shadow);
+}
+
+input:hover, textarea:hover, select:hover {
+  border-color: #7c83ff;
+  box-shadow: 0 0 10px rgba(124, 131, 255, 0.2);
 }
 
 /* Button Component System */
@@ -139,8 +145,9 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .btn-secondary:hover {
-  background: var(--border-light);
-  border-color: var(--text-muted);
+  background: var(--bg-tertiary);
+  border-color: #7c83ff;
+  box-shadow: 0 0 10px rgba(124, 131, 255, 0.3);
 }
 
 .btn:disabled {
