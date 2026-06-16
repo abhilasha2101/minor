@@ -132,14 +132,16 @@ app.use((err, req, res, _next) => {
 // Server Start
 // ──────────────────────────────────────────────
 const PORT = process.env.PORT || 3001;
-const server = app.listen(PORT, () => {
+const HOST = process.env.NODE_ENV === 'production' ? '0.0.0.0' : (process.env.HOST || '0.0.0.0');
+const server = app.listen(PORT, HOST, () => {
   console.log(`\n🛡️  Veritas AI Production Server`);
   console.log(`   Architecture: N-tier (Controller → Service → Repository → SQLite)`);
+  console.log(`   Host: ${HOST}`);
   console.log(`   Port: ${PORT}`);
   console.log(`   Environment: ${process.env.NODE_ENV || 'development'}`);
   console.log(`   Database: veritas.db (SQLite + WAL mode)`);
   console.log(`   Routes: /api/auth, /api/verify, /api/profile, /api/community`);
-  console.log(`   Health: http://localhost:${PORT}/api/health\n`);
+  console.log(`   Health: http://${HOST === '0.0.0.0' ? 'localhost' : HOST}:${PORT}/api/health\n`);
 });
 
 // ──────────────────────────────────────────────
