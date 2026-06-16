@@ -152,7 +152,8 @@ export function parseGeminiResponse(data) {
     try {
       const clean = rawText.replace(/```json|```/gi, '').trim();
       parsed = JSON.parse(clean);
-    } catch {
+    } catch (parseErr) {
+      console.error('[GeminiService] JSON parsing failed. Raw response was:\n', rawText);
       throw new Error('Failed to parse fact report format. AI did not return a valid schema.');
     }
   }
