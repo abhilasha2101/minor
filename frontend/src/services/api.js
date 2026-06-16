@@ -6,18 +6,18 @@
 // Safe evaluation of the API Base URL to prevent Vercel/Netlify relative routing regressions.
 const getApiBase = () => {
   const envUrl = import.meta.env.VITE_API_URL;
-  
+
   // Guard 1: Verify that the environment variable exists and starts with a valid protocol
   if (envUrl && (envUrl.startsWith('http://') || envUrl.startsWith('https://'))) {
     // Strip trailing slash if present to avoid double-slash formatting errors
     return envUrl.replace(/\/$/, '');
   }
-  
+
   // Guard 2: In development, fall back to '/api' which is proxied locally via Vite
   if (import.meta.env.DEV) {
     return '/api';
   }
-  
+
   // Guard 3: In production, fall back to the absolute backend URL to prevent requests from misrouting to the frontend host
   return 'https://veritas-ai-backend.up.railway.app/api';
 };
@@ -146,7 +146,7 @@ export function logoutUser() {
 }
 
 // ──────────────────────────────────────────────
-// Verify Endpoints
+// Verify Endpoints (Refactored & Shielded)
 // ──────────────────────────────────────────────
 
 /**
@@ -156,18 +156,41 @@ export function logoutUser() {
  * @returns {Promise<object>}
  */
 export async function verifyNewsClaim(claim, signal) {
-  const response = await fetch(`${API_BASE}/verify/text`, {
+  // Swapped to apiRequest for uniform error handling and JSON parsing protection
+  return apiRequest(`${API_BASE}/verify/text`, {
     method: 'POST',
-    headers: getHeaders(),
     body: JSON.stringify({ news: claim }),
     signal
   });
+}
 
-  const data = await response.json();
-  if (!response.ok) {
-    throw new Error(data.error?.message || `Request failed with status ${response.status}`);
-  }
-  return data;
+/**
+ * Verify an image/screenshot claim.
+ * @param {string} base64Data - Base64 encoded image
+ * @param {AbortSignal} [signal] - Optional AbortSignal for cancellation
+ * @returns {Promise<object>}
+ */
+export async function verifyImageClaim(base64Data, signal) {
+  // Swapped to apiRequest to guarantee plain text error responses don't break JSON parsing
+  return apiRequest(`${API_BASE}/verify/image`, {
+    method: 'POST',
+    body: JSON.stringify({ image: base64Data }),
+    signal
+  });
+}
+
+// ──────────────────────────────────────────────
+// Health Check (Refactored)
+// ──────────────────────────────────────────────
+
+/**
+ * Check backend server health.
+ * @returns {Promise<object>}
+ */
+export async function checkHealth() {
+  // Using apiRequest here ensures if the backend goes down or returns a 404 text string,
+  // it throws a clean catchable error instead of blowing up the UI.
+  return apiRequest(`${API_BASE}/health`, { method: 'GET' });
 }
 
 /**
