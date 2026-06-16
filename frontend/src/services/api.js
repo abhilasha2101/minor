@@ -3,7 +3,26 @@
  * All backend communication logic — Auth, Verify, Profile, Community endpoints.
  */
 
-const API_BASE = '/api';
+// Safe evaluation of the API Base URL to prevent Vercel/Netlify relative routing regressions.
+const getApiBase = () => {
+  const envUrl = import.meta.env.VITE_API_URL;
+  
+  // Guard 1: Verify that the environment variable exists and starts with a valid protocol
+  if (envUrl && (envUrl.startsWith('http://') || envUrl.startsWith('https://'))) {
+    // Strip trailing slash if present to avoid double-slash formatting errors
+    return envUrl.replace(/\/$/, '');
+  }
+  
+  // Guard 2: In development, fall back to '/api' which is proxied locally via Vite
+  if (import.meta.env.DEV) {
+    return '/api';
+  }
+  
+  // Guard 3: In production, fall back to the absolute backend URL to prevent requests from misrouting to the frontend host
+  return 'https://veritas-ai-backend.up.railway.app/api';
+};
+
+const API_BASE = getApiBase();
 
 // ──────────────────────────────────────────────
 // Token Management
