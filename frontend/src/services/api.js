@@ -193,26 +193,7 @@ export async function checkHealth() {
   return apiRequest(`${API_BASE}/health`, { method: 'GET' });
 }
 
-/**
- * Verify an image/screenshot claim.
- * @param {string} base64Data - Base64 encoded image
- * @param {AbortSignal} [signal] - Optional AbortSignal for cancellation
- * @returns {Promise<object>}
- */
-export async function verifyImageClaim(base64Data, signal) {
-  const response = await fetch(`${API_BASE}/verify/image`, {
-    method: 'POST',
-    headers: getHeaders(),
-    body: JSON.stringify({ image: base64Data }),
-    signal
-  });
 
-  const data = await response.json();
-  if (!response.ok) {
-    throw new Error(data.error?.message || `Request failed with status ${response.status}`);
-  }
-  return data;
-}
 
 /**
  * Submit feedback on a verification result.
@@ -334,19 +315,7 @@ export async function upvoteCommunityRequest(requestId) {
   });
 }
 
-// ──────────────────────────────────────────────
-// Health Check
-// ──────────────────────────────────────────────
 
-/**
- * Check backend server health.
- * @returns {Promise<object>}
- */
-export async function checkHealth() {
-  const response = await fetch(`${API_BASE}/health`);
-  if (!response.ok) throw new Error('Backend offline');
-  return response.json();
-}
 
 // ──────────────────────────────────────────────
 // Response Parsing
